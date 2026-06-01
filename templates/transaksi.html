@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>FinTrace – Catat Transaksi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: { bg:'#0d1b2a', surface:'#112236', card:'#17304a', accent:'#38bdf8', muted:'#5d8aaa', border:'rgba(56,189,248,0.15)' }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background:#0d1b2a; font-family:'Plus Jakarta Sans',sans-serif; overflow: hidden; }
+    
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation: fadeUp .6s ease both; }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    
+    /* Ambient Lights */
+    .blob1 { position:fixed;top:-10%;left:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,0.08) 0%,transparent 70%);pointer-events:none; z-index: 0; }
+    .blob2 { position:fixed;bottom:-10%;right:-5%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(52,211,153,0.05) 0%,transparent 70%);pointer-events:none; z-index: 0; }
+    
+    /* Custom Card Style */
+    .glass-card { background:#112236; border: 1px solid rgba(56,189,248,0.13); box-shadow:0 12px 40px rgba(0,0,0,0.2); }
+    
+    /* Custom Input Style */
+    .form-input { background:#0d1b2a; border:1.5px solid rgba(56,189,248,0.15); color:#d4e8f8; transition:border-color .2s; }
+    .form-input:focus { border-color:#38bdf8; outline:none; }
+    .form-input::placeholder { color:#5d8aaa; }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.2); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(56,189,248,0.5); }
+
+    /* Custom Color for Date Picker Icon in Webkit */
+    ::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.5); cursor: pointer; }
+  </style>
+</head>
+<body class="h-screen text-[#d4e8f8] flex">
+  <div class="blob1"></div>
+  <div class="blob2"></div>
+
+  <!-- Sidebar -->
+  <aside class="relative z-10 w-64 border-r flex flex-col transition-all hidden md:flex" style="border-color:rgba(56,189,248,0.15); background:rgba(17,34,54,0.7); backdrop-filter: blur(10px);">
+    <div class="p-6 border-b" style="border-color:rgba(56,189,248,0.15);">
+      <a href="#" class="inline-flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">💰</div>
+        <span class="text-white font-extrabold text-xl tracking-tight">FinTrace</span>
+      </a>
+    </div>
+
+    <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+      <p class="text-[10px] font-bold text-muted uppercase tracking-widest mb-3 ml-2">Menu Utama</p>
+      
+      <!-- Menu Inaktif (Dashboard) -->
+      <a href="{{ url_for('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
+        <span>📊</span>
+        <span>Dashboard</span>
+      </a>
+      
+      <!-- Menu Aktif (Catat Transaksi) -->
+      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-white font-bold transition-all" style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2);">
+        <span class="text-accent">✍️</span>
+        <span>Catat Transaksi</span>
+      </a>
+
+      <!-- Menu Inaktif (Pengaturan) -->
+      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
+        <span>⚙️</span>
+        <span>Pengaturan Akun</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t" style="border-color:rgba(56,189,248,0.15);">
+      <a href="{{ url_for('logout') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 font-medium hover:bg-red-400/10 hover:text-red-300 transition-all border border-transparent hover:border-red-400/20">
+        <span>🚪</span>
+        <span>Keluar</span>
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 relative z-10 flex flex-col h-screen overflow-hidden">
+    
+    <!-- Topbar/Header -->
+    <header class="px-8 py-6 flex items-center justify-between fade-up">
+      <div>
+        <h1 class="text-2xl font-extrabold text-white">Catat Transaksi Baru</h1>
+        <p class="text-muted text-sm mt-1">Tambahkan data pemasukan atau pengeluaran harianmu.</p>
+      </div>
+    </header>
+
+    <!-- Content (Scrollable) -->
+    <div class="flex-1 overflow-y-auto px-8 pb-10 space-y-6">
+      
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-up delay-100">
+        
+        <!-- Kolom Kiri: Formulir Pencatatan (Lebar 2 Kolom) -->
+        <div class="glass-card rounded-2xl p-6 lg:col-span-2">
+          
+          <!-- Pesan Sukses (Opsional, dari Jinja2) -->
+          {% if success_msg %}
+          <div class="mb-6 px-4 py-3 rounded-xl text-sm flex items-center gap-2" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:#34d399">
+            ✅ {{ success_msg }}
+          </div>
+          {% endif %}
+
+          <form method="POST" action="/transaksi" class="space-y-6">
+            
+            <!-- Pilihan Jenis Transaksi (Radio Buttons Bergaya Card) -->
+            <div>
+              <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-3">Jenis Transaksi</label>
+              <div class="grid grid-cols-2 gap-4">
+                <label class="cursor-pointer relative">
+                  <input type="radio" name="jenis" value="pengeluaran" class="peer sr-only" checked>
+                  <div class="w-full text-center px-4 py-3 rounded-xl border border-transparent font-bold text-sm text-muted bg-[#0d1b2a] hover:bg-white/5 transition-all peer-checked:bg-[rgba(244,63,94,0.1)] peer-checked:border-[rgba(244,63,94,0.3)] peer-checked:text-rose-400">
+                    📉 Pengeluaran
+                  </div>
+                </label>
+                <label class="cursor-pointer relative">
+                  <input type="radio" name="jenis" value="pemasukan" class="peer sr-only">
+                  <div class="w-full text-center px-4 py-3 rounded-xl border border-transparent font-bold text-sm text-muted bg-[#0d1b2a] hover:bg-white/5 transition-all peer-checked:bg-[rgba(52,211,153,0.1)] peer-checked:border-[rgba(52,211,153,0.3)] peer-checked:text-emerald-400">
+                    📈 Pemasukan
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- Tanggal -->
+              <div>
+                <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Tanggal</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">📅</span>
+                  <input type="date" name="tanggal" required class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm" value="2026-05-29"/>
+                </div>
+              </div>
+
+              <!-- Kategori -->
+              <div>
+                <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Kategori</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">📁</span>
+                  <select name="kategori" required class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm appearance-none bg-[#0d1b2a]">
+                    <option value="" disabled selected>Pilih Kategori...</option>
+                    <option value="makanan">Makanan & Minuman</option>
+                    <option value="transportasi">Transportasi</option>
+                    <option value="tagihan">Tagihan & Utilitas</option>
+                    <option value="hiburan">Hiburan</option>
+                    <option value="gaji">Gaji / Pendapatan</option>
+                    <option value="lainnya">Lainnya</option>
+                  </select>
+                  <!-- Custom Arrow Down -->
+                  <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-muted">
+                    ▼
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Nominal -->
+            <div>
+              <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Jumlah Nominal (Rp)</label>
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm font-bold">Rp</span>
+                <input type="number" name="nominal" required placeholder="0" min="0" class="form-input w-full rounded-xl py-3 pr-4 pl-12 text-lg font-bold tracking-wider"/>
+              </div>
+            </div>
+
+            <!-- Keterangan -->
+            <div>
+              <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Keterangan / Catatan</label>
+              <textarea name="keterangan" rows="3" placeholder="Contoh: Beli bensin, Makan siang bareng tim..." class="form-input w-full rounded-xl py-3 px-4 text-sm resize-none"></textarea>
+            </div>
+
+            <!-- Tombol Simpan -->
+            <div class="pt-2">
+              <button type="submit" class="w-full py-4 rounded-xl font-bold text-sm text-bg transition-all hover:opacity-90 active:scale-95 flex justify-center items-center gap-2" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">
+                💾 Simpan Transaksi
+              </button>
+            </div>
+
+          </form>
+        </div>
+
+        <!-- Kolom Kanan: Ringkasan Hari Ini (Lebar 1 Kolom) -->
+        <div class="fade-up delay-200 space-y-6">
+          
+          <div class="glass-card rounded-2xl p-6">
+            <h2 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <span>🕒</span> Terakhir Ditambahkan
+            </h2>
+            
+            <div class="space-y-4">
+              <!-- Item Transaksi Mini -->
+              <div class="flex items-center justify-between pb-4 border-b" style="border-color:rgba(56,189,248,0.1);">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:rgba(244,63,94,0.1); color:#fb7185;">☕</div>
+                  <div>
+                    <p class="text-sm font-bold text-white">Kopi Pagi</p>
+                    <p class="text-[10px] text-muted">Makanan & Minuman</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-bold text-rose-400">- 25.000</p>
+                </div>
+              </div>
+
+              <!-- Item Transaksi Mini -->
+              <div class="flex items-center justify-between pb-4 border-b" style="border-color:rgba(56,189,248,0.1);">
+                <div class="flex items-center gap-3">
+                  <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:rgba(52,211,153,0.1); color:#34d399;">💻</div>
+                  <div>
+                    <p class="text-sm font-bold text-white">Freelance Design</p>
+                    <p class="text-[10px] text-muted">Pendapatan</p>
+                  </div>
+                </div>
+                <div class="text-right">
+                  <p class="text-sm font-bold text-emerald-400">+ 850.000</p>
+                </div>
+              </div>
+            </div>
+
+            <a href="#" class="block text-center text-xs font-bold text-accent mt-4 hover:underline">
+              Lihat Semua Riwayat →
+            </a>
+          </div>
+
+          <!-- Mini Widget Bantuan -->
+          <div class="rounded-2xl p-5 border" style="background:rgba(56,189,248,0.05); border-color:rgba(56,189,248,0.2);">
+            <div class="flex gap-3">
+              <span class="text-accent text-xl">💡</span>
+              <div>
+                <h3 class="text-xs font-bold text-accent mb-1">Tips Keuangan</h3>
+                <p class="text-[11px] text-muted leading-relaxed">Catat pengeluaranmu secara rutin setiap hari untuk menghindari kebocoran dana yang tidak disadari di akhir bulan.</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</body>
+</html>

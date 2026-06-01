@@ -1,0 +1,39 @@
+# === Python Cache ===
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+htmlcov/
+.toastie
+.cache
+.pytest_cache/
+
+# === Environments (Virtualbox / Pipenv) ===
+.venv/
+env/
+venv/
+ENV/
+bin/
+lib/
+include/
+
+# === IDE & Text Editors Config ===
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# === Database & Local Secrets ===
+.env
+instance/
+.webassets-cache
+*.db
+*.sqlite
+
+# === OS Garbage ===
+.DS_Store
+Thumbs.db

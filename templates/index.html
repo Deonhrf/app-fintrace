@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>FinTrace – Pantau Keuanganmu dengan Cerdas</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: { bg:'#0d1b2a', surface:'#112236', card:'#17304a', accent:'#38bdf8', muted:'#5d8aaa', border:'rgba(56,189,248,0.15)' }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background:#0d1b2a; font-family:'Plus Jakarta Sans',sans-serif; overflow-x: hidden; }
+    
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation: fadeUp .6s ease both; }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    .delay-300 { animation-delay: 0.3s; }
+
+    /* Ambient Lights */
+    .blob1 { position:absolute;top:-10%;left:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,0.08) 0%,transparent 70%);pointer-events:none; }
+    .blob2 { position:absolute;top:40%;right:-10%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(52,211,153,0.05) 0%,transparent 70%);pointer-events:none; }
+    
+    /* Custom Card Style based on your login form */
+    .glass-card { background:#112236; border: 1px solid rgba(56,189,248,0.13); box-shadow:0 24px 60px rgba(0,0,0,0.2); }
+  </style>
+</head>
+<body class="min-h-screen text-[#d4e8f8]">
+  <div class="blob1"></div>
+  <div class="blob2"></div>
+
+  <nav class="relative z-10 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between fade-up">
+    <div class="inline-flex items-center gap-3">
+      <div class="w-10 h-10 rounded-xl flex items-center justify-center text-lg" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">💰</div>
+      <span class="text-white font-extrabold text-xl tracking-tight">FinTrace</span>
+    </div>
+    <div class="flex items-center gap-6">
+      <a href="{{ url_for('login') }}" class="px-5 py-2.5 rounded-xl font-bold text-sm text-bg transition-all hover:opacity-90 active:scale-95" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">
+        Mulai Gratis
+      </a>
+    </div>
+  </nav>
+
+  <main class="relative z-10 max-w-6xl mx-auto px-6 pt-20 pb-24 text-center">
+    <div class="fade-up delay-100">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border mb-8" style="background:rgba(56,189,248,0.05); border-color:rgba(56,189,248,0.2);">
+        <span class="w-2 h-2 rounded-full bg-accent animate-pulse"></span>
+        <span class="text-accent text-xs font-bold tracking-widest uppercase">Platform Pencatatan Generasi Baru</span>
+      </div>
+      
+      <h1 class="text-4xl md:text-6xl font-extrabold text-white leading-tight mb-6 max-w-4xl mx-auto tracking-tight">
+        Lacak Setiap Rupiah,<br/>
+        <span style="color:#38bdf8;">Kendalikan Masa Depanmu.</span>
+      </h1>
+      
+      <p class="text-muted text-lg md:text-xl max-w-2xl mx-auto mb-10 leading-relaxed">
+        FinTrace membantu kamu mencatat pengeluaran, memantau anggaran bulanan, dan mencapai kebebasan finansial dengan antarmuka yang modern dan intuitif.
+      </p>
+      
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="{{ url_for('register') }}" class="w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold text-sm text-bg transition-all hover:opacity-90 active:scale-95 flex items-center justify-center gap-2" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">
+          Login Akun Sekarang →
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <footer class="relative z-10 border-t fade-up delay-300" style="border-color:rgba(56,189,248,0.1);">
+    <div class="max-w-6xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="text-white font-bold tracking-tight">FinTrace <span class="text-muted font-normal text-sm ml-2">© 2026</span></div>
+      <div class="text-muted text-sm flex gap-6">
+        <a href="#" class="hover:text-accent transition-colors">Privasi</a>
+        <a href="#" class="hover:text-accent transition-colors">Syarat & Ketentuan</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

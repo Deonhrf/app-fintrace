@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>FinTrace – Dashboard Keuangan</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: { bg:'#0d1b2a', surface:'#112236', card:'#17304a', accent:'#38bdf8', muted:'#5d8aaa', border:'rgba(56,189,248,0.15)' }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background:#0d1b2a; font-family:'Plus Jakarta Sans',sans-serif; overflow: hidden; }
+    
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation: fadeUp .6s ease both; }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    
+    .glass-card { background:#112236; border: 1px solid rgba(56,189,248,0.13); box-shadow:0 12px 40px rgba(0,0,0,0.2); }
+    
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.2); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(56,189,248,0.5); }
+  </style>
+</head>
+<body class="h-screen text-[#d4e8f8] flex">
+  <div class="blob1"></div>
+  <div class="blob2"></div>
+
+  <aside class="relative z-10 w-64 border-r flex flex-col transition-all hidden md:flex" style="border-color:rgba(56,189,248,0.15); background:rgba(17,34,54,0.7); backdrop-filter: blur(10px);">
+    <div class="p-6 border-b" style="border-color:rgba(56,189,248,0.15);">
+      <a href="#" class="inline-flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">💰</div>
+        <span class="text-white font-extrabold text-xl tracking-tight">FinTrace</span>
+      </a>
+    </div>
+
+    <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+      <p class="text-[10px] font-bold text-muted uppercase tracking-widest mb-3 ml-2">Menu Utama</p>
+      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-white font-bold transition-all" style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2);">
+        <span class="text-accent">📊</span>
+        <span>Dashboard</span>
+      </a>
+      <a href="{{ url_for('transaksi') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
+        <span>✍️</span>
+        <span>Catat Transaksi</span>
+      </a>
+      <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
+        <span>⚙️</span>
+        <span>Pengaturan Akun</span>
+      </a>
+    </nav>
+
+    <div class="p-4 border-t" style="border-color:rgba(56,189,248,0.15);">
+      <a href="{{ url_for('logout') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 font-medium hover:bg-red-400/10 hover:text-red-300 transition-all border border-transparent hover:border-red-400/20">
+        <span>🚪</span>
+        <span>Keluar</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="flex-1 relative z-10 flex flex-col h-screen overflow-hidden">
+    <header class="px-8 py-6 flex items-center justify-between fade-up">
+      <div>
+        <h1 class="text-2xl font-extrabold text-white">Dashboard Keuangan</h1>
+        <p class="text-muted text-sm mt-1">Halo, <strong>Deon</strong>! Ini ringkasan finansialmu bulan ini.</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <button class="px-4 py-2.5 rounded-xl font-bold text-xs text-white border transition-all hover:bg-white/5 active:scale-95 flex items-center gap-2" style="border-color:rgba(56,189,248,0.3)">
+          📥 Ekspor Laporan
+        </button>
+      </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto px-8 pb-10 space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 fade-up delay-100">
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-2 h-full bg-accent"></div>
+          <div class="text-muted text-xs font-bold uppercase tracking-widest mb-1">Total Saldo Saat Ini</div>
+          <div class="text-3xl font-extrabold text-white">{{ "{:,.0f}".format(saldo) }}</div>
+          <div class="mt-3 text-xs text-emerald-400 font-medium">Naik 15% dari bulan lalu</div>
+        </div>
+        
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-2 h-full bg-emerald-500"></div>
+          <div class="text-muted text-xs font-bold uppercase tracking-widest mb-1">Total Pemasukan</div>
+          <div class="text-3xl font-extrabold text-white">{{ "{:,.0f}".format(pemasukan) }}</div>
+          <div class="mt-3 text-xs text-muted font-medium">Periode: Mei 2026</div>
+        </div>
+        
+        <div class="glass-card rounded-2xl p-6 relative overflow-hidden">
+          <div class="absolute top-0 right-0 w-2 h-full bg-rose-500"></div>
+          <div class="text-muted text-xs font-bold uppercase tracking-widest mb-1">Total Pengeluaran</div>
+          <div class="text-3xl font-extrabold text-white">{{ "{:,.0f}".format(pengeluaran) }}</div>
+          <div class="mt-3 text-xs text-muted font-medium">Periode: Mei 2026</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-up delay-200">
+        <div class="glass-card rounded-2xl flex flex-col lg:col-span-2">
+          <div class="p-6 border-b flex justify-between items-center" style="border-color:rgba(56,189,248,0.15);">
+            <h2 class="text-lg font-bold text-white">Riwayat Transaksi Terakhir</h2>
+            <a href="#" class="text-xs font-bold text-accent hover:underline">Lihat Semua</a>
+          </div>
+          <div class="p-0 overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-surface/50 text-muted text-[11px] uppercase tracking-widest">
+                  <th class="py-4 px-6 font-bold">Tanggal</th>
+                  <th class="py-4 px-6 font-bold">Keterangan</th>
+                  <th class="py-4 px-6 font-bold">Kategori</th>
+                  <th class="py-4 px-6 font-bold text-right">Jumlah</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm">
+                {% if riwayat %}
+                  {% for tx in riwayat %}
+                  <tr class="border-b transition-colors hover:bg-white/5" style="border-color:rgba(56,189,248,0.05);">
+                    <td class="py-4 px-6 text-muted">{{ tx.date }}</td>
+                    <td class="py-4 px-6 font-semibold text-white">{{ tx.description }}</td>
+                    <td class="py-4 px-6">
+                      {% if tx.type == 'pemasukan' %}
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider" style="background:rgba(52,211,153,0.1); color:#34d399; border:1px solid rgba(52,211,153,0.2);">
+                          {{ tx.category.capitalize() }}
+                        </span>
+                      {% else %}
+                        <span class="px-3 py-1 rounded-full text-[10px] font-bold tracking-wider" style="background:rgba(244,63,94,0.1); color:#fb7185; border:1px solid rgba(244,63,94,0.2);">
+                          {{ tx.category.capitalize() }}
+                        </span>
+                      {% endif %}
+                    </td>
+                    <td class="py-4 px-6 text-right font-bold {% if tx.type == 'pemasukan' %}text-emerald-400{% else %}text-rose-400{% endif %}">
+                      {% if tx.type == 'pemasukan' %}+{% else %}-{% endif %} Rp {{ "{:,.0f}".format(tx.amount) }}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                {% else %}
+                  <tr>
+                    <td colspan="4" class="py-8 text-center text-muted text-xs">Belum ada riwayat transaksi bulan ini.</td>
+                  </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-2xl p-6 flex flex-col">
+          <h2 class="text-lg font-bold text-white mb-6">Persentase Pengeluaran</h2>
+          <div class="flex-1 flex items-center justify-center relative min-h-[200px]">
+            <canvas id="expenseChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const ctx = document.getElementById('expenseChart').getContext('2d');
+    
+    const centerTextPlugin = {
+    id: 'centerText',
+    beforeDraw: function(chart) {
+      if (chart.config.type === 'doughnut') {
+        const width = chart.width,
+              height = chart.height,
+              ctx = chart.ctx;
+        ctx.restore();
+        const fontSize = (height / 150).toFixed(2); // Sedikit disesuaikan agar teks muat
+        ctx.font = "bold " + fontSize + "em 'Plus Jakarta Sans'";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#fb7185"; // Kita ubah warnanya jadi kemerahan (warna khas pengeluaran)
+        
+        const text = "", // <-- UBAH DI SINI: Dari "Mei" menjadi "Keluar"
+              textX = Math.round((width - ctx.measureText(text).width) / 2),
+              textY = height / 2;
+        ctx.fillText(text, textX, textY);
+        ctx.save();
+      }
+    }
+  };
+    // 1. Ambil data dari Flask menggunakan Filter Safe Jinja2
+    const serverLabels = {{ chart_labels | safe }};
+    const serverValues = {{ chart_values | safe }};
+
+    // 2. JALUR PENYELAMAT: Hubungkan variabel pengaman ke Chart.js
+    const finalLabels = serverLabels.length > 0 ? serverLabels : ['Belum ada pengeluaran'];
+    const finalValues = serverValues.length > 0 ? serverValues : [1]; 
+    const finalColors = serverLabels.length > 0 
+      ? ['#fb7185', '#38bdf8', '#a78bfa', '#fbbf24', '#34d399', '#64748b'] 
+      : ['#1e293b']; // Slate abu-abu gelap jika database kosong
+
+    const expenseChart = new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: finalLabels, // Menggunakan array pengaman
+        datasets: [{
+          data: finalValues, // Menggunakan array pengaman
+          backgroundColor: finalColors, // Menggunakan susunan warna pengaman
+          borderColor: '#112236',
+          borderWidth: 4,
+          hoverOffset: serverLabels.length > 0 ? 4 : 0
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '75%',
+        plugins: {
+          legend: {
+            display: serverLabels.length > 0 ? true : false, // Sembunyikan legenda jika data kosong
+            position: 'bottom',
+            labels: {
+              color: '#d4e8f8',
+              usePointStyle: true,
+              padding: 20,
+              font: { family: "'Plus Jakarta Sans', sans-serif", size: 11 }
+            }
+          },
+          tooltip: {
+            enabled: serverLabels.length > 0 ? true : false, // Matikan tooltip jika data kosong
+            backgroundColor: 'rgba(17,34,54,0.9)',
+            titleColor: '#38bdf8',
+            bodyColor: '#ffffff',
+            borderColor: 'rgba(56,189,248,0.2)',
+            borderWidth: 1,
+            padding: 10,
+            displayColors: true,
+            callbacks: {
+              label: function(context) {
+                let value = context.raw;
+                return ' ' + context.label + ': Rp ' + value.toLocaleString('id-ID');
+              }
+            }
+          }
+        }
+      },
+      plugins: [centerTextPlugin]
+    });
+  </script>
+</body>
+</html>
