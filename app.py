@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,redirect, url_for, session
+from flask import Flask, render_template, request,redirect, url_for, session, Response
 import pymysql
 import json
 
@@ -157,6 +157,117 @@ def transaksi():
         return redirect(url_for('dashboard'))
     
     return render_template('transaksi.html')
+
+
+@app.route('/riwayat', methods=['GET'])
+def riwayat():
+    # 1. BENTENG KEAMANAN: Pastikan user wajib login terlebih dahulu
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
+    id_user = session['user_id']
+    
+    # 2. TANGKAP INPUT FILTER: Mengambil parameter pencarian dari URL (GET Request)
+    search_query = request.args.get('search', '')
+    filter_category = request.args.get('category', '')
+    filter_type = request.args.get('type', '')
+
+    # 3. KONEKSI & AMBIL DATA: Wajib gunakan DictCursor agar klop dengan HTML (tx.date, tx.description)
+    mycur = mydb.cursor(pymysql.cursors.DictCursor)
+
+    # Base query dasar untuk mengambil semua data milik user yang aktif
+    query = """
+        SELECT 
+            id,
+            DATE_FORMAT(date, '%%d %%b %%Y') as date, 
+            description, 
+            category, 
+            type, 
+            amount 
+        FROM transactions 
+        WHERE user_id = %s
+    """
+    params = [id_user]
+
+    # LOGIKA FILTER DINAMIS (Anti-Vibe Coding):
+    # Jika kolom pencarian diisi oleh user
+    if search_query:
+        query += " AND description LIKE %s"
+        params.append(f"%{search_query}%")
+
+    # Jika drop-down kategori dipilih
+    if filter_category:
+        query += " AND category = %s"
+        params.append(filter_category)
+
+    # Jika drop-down jenis transaksi dipilih (pemasukan/pengeluaran)
+    if filter_type:
+        query += " AND type = %s"
+        params.append(filter_type)
+
+    # Urutkan data secara kronologis dari yang paling baru dimasukkan
+    query += " ORDER BY transactions.date DESC, id DESC"
+
+    # Eksekusi query gabungan beserta parameternya yang aman dari SQL Injection
+    mycur.execute(query, tuple(params))
+    seluruh_riwayat = mycur.fetchall()
+    mycur.close()
+
+    # 4. LEMPAR KE HTML: Samakan nama parameternya 'riwayat=' agar terbaca oleh {% if riwayat %}
+    return render_template('riwayat.html', 
+                           riwayat=seluruh_riwayat,
+                           search=search_query,
+                           selected_category=filter_category,
+                           selected_type=filter_type)
+
+
+@app.route('/ekspor', methods=['GET'])
+def ekspor_laporan():
+    # 1. Benteng Keamanan: Wajib login
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
+    id_user = session['user_id']
+    mycur = mydb.cursor(pymysql.cursors.DictCursor)
+    
+    # 2. Ambil seluruh data transaksi privat tanpa LIMIT
+    mycur.execute("""
+        SELECT 
+            DATE_FORMAT(date, '%%d-%%m-%%Y') as tanggal, 
+            description, 
+            category, 
+            type, 
+            amount 
+        FROM transactions 
+        WHERE user_id = %s 
+        ORDER BY date DESC, id DESC
+    """, (id_user,))
+    data_transaksi = mycur.fetchall()
+    mycur.close()
+
+    # 3. Logika Generator CSV: Menulis baris demi baris ke dalam memori buffer
+    def generate():
+        # Buat Header Kolom Laporan
+        header = ['Tanggal', 'Keterangan', 'Kategori', 'Jenis Transaksi', 'Nominal (Rp)']
+        yield ','.join(header) + '\n'
+        
+        # Iterasi masukkan data database ke baris di bawah header
+        for row in data_transaksi:
+            baris = [
+                row['tanggal'],
+                f'"{row["description"]}"', # Dibungkus kutip ganda aman dari spasi/koma teks
+                row['category'].capitalize(),
+                row['type'].capitalize(),
+                str(int(row['amount'])) # Ubah decimal ke teks angka bulat
+            ]
+            yield ','.join(baris) + '\n'
+
+    # 4. Return Object Response dengan Header khusus agar Browser mendownload berkas
+    return Response(
+        generate(),
+        mimetype="text/csv",
+        headers={"Content-Disposition": "attachment; filename=Laporan_FinTrace_Mei_2026.csv"}
+    )
 
 @app.route('/logout')
 def logout():
