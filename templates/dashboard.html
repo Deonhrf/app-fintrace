@@ -39,7 +39,7 @@
 
   <aside class="relative z-10 w-64 border-r flex flex-col transition-all hidden md:flex" style="border-color:rgba(56,189,248,0.15); background:rgba(17,34,54,0.7); backdrop-filter: blur(10px);">
     <div class="p-6 border-b" style="border-color:rgba(56,189,248,0.15);">
-      <a href="#" class="inline-flex items-center gap-3">
+      <a href="{{ url_for('dashboard') }}" class="inline-flex items-center gap-3">
         <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">💰</div>
         <span class="text-white font-extrabold text-xl tracking-tight">FinTrace</span>
       </a>
@@ -60,13 +60,20 @@
         <span>Pengaturan Akun</span>
       </a>
     </nav>
-
-    <div class="p-4 border-t" style="border-color:rgba(56,189,248,0.15);">
-      <a href="{{ url_for('logout') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-red-400 font-medium hover:bg-red-400/10 hover:text-red-300 transition-all border border-transparent hover:border-red-400/20">
-        <span>🚪</span>
-        <span>Keluar</span>
-      </a>
-    </div>
+      <div class="p-6 border-t" style="border-color:rgba(56,189,248,0.15);">
+        <a href="{{ url_for('logout') }}" class="group flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-rose-400 bg-rose-500/5 border border-rose-500/10 transition-all duration-300 hover:bg-rose-500/15 hover:border-rose-500/30 hover:shadow-[0_8px_20px_rgba(244,63,94,0.1)] active:scale-95">
+          
+          <!-- Wadah Ikon SVG -->
+          <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-[#0d1b2a] border border-rose-500/10 group-hover:border-rose-500/30 transition-colors">
+            <!-- Icon SVG Keluar (Logout) -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+            </svg>
+          </div>
+          
+          <span class="tracking-wide">Keluar Akun</span>
+        </a>
+      </div>
   </aside>
 
   <main class="flex-1 relative z-10 flex flex-col h-screen overflow-hidden">
