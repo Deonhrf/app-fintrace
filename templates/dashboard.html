@@ -84,12 +84,7 @@
     <header class="px-8 py-6 flex items-center justify-between fade-up">
       <div>
         <h1 class="text-2xl font-extrabold text-white">Dashboard Keuangan</h1>
-        <p class="text-muted text-sm mt-1">Halo, <strong>Deon</strong>! Ini ringkasan finansialmu bulan ini.</p>
-      </div>
-      <div class="flex items-center gap-4">
-        <button class="px-4 py-2.5 rounded-xl font-bold text-xs text-white border transition-all hover:bg-white/5 active:scale-95 flex items-center gap-2" style="border-color:rgba(56,189,248,0.3)">
-          📥 Ekspor Laporan
-        </button>
+        <p class="text-muted text-sm mt-1">Halo, <strong>{{ session.name | capitalize }}</strong> ! Ini ringkasan finansialmu bulan ini.</p>
       </div>
     </header>
 

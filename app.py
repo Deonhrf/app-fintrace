@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request,redirect, url_for, session, Response
+from flask import Flask, render_template, request,redirect, url_for, session, Response, flash
 import pymysql
 import json
 
@@ -109,6 +109,7 @@ def login():
         mycur.close()
         if result and password == result[2]:
             session['user_id'] = result[0]
+            session['name'] = result[1]
             return redirect('/dashboard')
         else: 
             return render_template('login.html', error="Nama atau Password Salah")
@@ -138,6 +139,7 @@ def transaksi():
         return redirect(url_for('login'))
     
     id_user = session['user_id']
+    pesan_teks = None
 
     if request.method == 'POST':
         type = request.form.get('jenis') # Pemasukkan atau pengeluaran
@@ -154,9 +156,26 @@ def transaksi():
         mydb.commit()
         mycur.close()
 
-        return redirect(url_for('dashboard'))
-    
-    return render_template('transaksi.html')
+        pesan_teks = "Transaksi berhasil dicatat!"
+
+    mycur = mydb.cursor(pymysql.cursors.DictCursor)
+    mycur.execute("""
+        SELECT 
+            description, 
+            category, 
+            type, 
+            amount 
+        FROM transactions 
+        WHERE user_id = %s 
+        ORDER BY id DESC 
+        LIMIT 2
+    """, (id_user,))
+    data_mini = mycur.fetchall()
+    mycur.close()
+
+    return render_template('transaksi.html',
+                           pesan = pesan_teks,
+                           transaksi_terakhir = data_mini)
 
 
 @app.route('/riwayat', methods=['GET'])
