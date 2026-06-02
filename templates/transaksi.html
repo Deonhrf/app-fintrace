@@ -50,7 +50,6 @@
   <div class="blob1"></div>
   <div class="blob2"></div>
 
-  <!-- Sidebar -->
   <aside class="relative z-10 w-64 border-r flex flex-col transition-all hidden md:flex" style="border-color:rgba(56,189,248,0.15); background:rgba(17,34,54,0.7); backdrop-filter: blur(10px);">
     <div class="p-6 border-b" style="border-color:rgba(56,189,248,0.15);">
       <a href="{{ url_for('dashboard') }}" class="inline-flex items-center gap-3">
@@ -62,86 +61,79 @@
     <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
       <p class="text-[10px] font-bold text-muted uppercase tracking-widest mb-3 ml-2">Menu Utama</p>
       
-      <!-- Menu Inaktif (Dashboard) -->
       <a href="{{ url_for('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
         <span>📊</span>
         <span>Dashboard</span>
       </a>
       
-      <!-- Menu Aktif (Catat Transaksi) -->
       <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-white font-bold transition-all" style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2);">
         <span class="text-accent">✍️</span>
         <span>Catat Transaksi</span>
       </a>
 
-      <a href="{{ url_for('riwayat') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all"">
+      <a href="{{ url_for('riwayat') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
         <span class="text-accent">📜</span>
         <span>Riwayat Transaksi</span>
       </a>
 
-      <!-- Menu Inaktif (Pengaturan) -->
       <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
         <span>⚙️</span>
         <span>Pengaturan Akun</span>
       </a>
     </nav>
 
-      <div class="p-6 border-t" style="border-color:rgba(56,189,248,0.15);">
-        <a href="{{ url_for('logout') }}" class="group flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-rose-400 bg-rose-500/5 border border-rose-500/10 transition-all duration-300 hover:bg-rose-500/15 hover:border-rose-500/30 hover:shadow-[0_8px_20px_rgba(244,63,94,0.1)] active:scale-95">
-          
-          <!-- Wadah Ikon SVG -->
-          <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-[#0d1b2a] border border-rose-500/10 group-hover:border-rose-500/30 transition-colors">
-            <!-- Icon SVG Keluar (Logout) -->
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
-            </svg>
-          </div>
-          
-          <span class="tracking-wide">Keluar Akun</span>
-        </a>
-      </div>
+    <div class="p-6 border-t" style="border-color:rgba(56,189,248,0.15);">
+      <a href="{{ url_for('logout') }}" class="group flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-rose-400 bg-rose-500/5 border border-rose-500/10 transition-all duration-300 hover:bg-rose-500/15 hover:border-rose-500/30 hover:shadow-[0_8px_20px_rgba(244,63,94,0.1)] active:scale-95">
+        
+        <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-[#0d1b2a] border border-rose-500/10 group-hover:border-rose-500/30 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+          </svg>
+        </div>
+        
+        <span class="tracking-wide">Keluar Akun</span>
+      </a>
+    </div>
   </aside>
 
-  <!-- Main Content Area -->
   <main class="flex-1 relative z-10 flex flex-col h-screen overflow-hidden">
     
-    <!-- Topbar/Header -->
     <header class="px-8 py-6 flex items-center justify-between fade-up">
       <div>
-        <h1 class="text-2xl font-extrabold text-white">Catat Transaksi Baru</h1>
-        <p class="text-muted text-sm mt-1">Tambahkan data pemasukan atau pengeluaran harianmu.</p>
+        <h1 class="text-2xl font-extrabold text-white">
+          {% if data_edit %}Ubah Data Transaksi{% else %}Catat Transaksi Baru{% endif %}
+        </h1>
+        <p class="text-muted text-sm mt-1">
+          {% if data_edit %}Perbarui isi detail dari transaksi lama milikmu.{% else %}Tambahkan data pemasukan atau pengeluaran harianmu.{% endif %}
+        </p>
       </div>
     </header>
 
-    <!-- Content (Scrollable) -->
     <div class="flex-1 overflow-y-auto px-8 pb-10 space-y-6">
       
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-up delay-100">
         
-        <!-- Kolom Kiri: Formulir Pencatatan (Lebar 2 Kolom) -->
         <div class="glass-card rounded-2xl p-6 lg:col-span-2">
           
-          <!-- Pesan Sukses (Opsional, dari Jinja2) -->
-          {% if success_msg %}
+          {% if pesan %}
           <div class="mb-6 px-4 py-3 rounded-xl text-sm flex items-center gap-2" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:#34d399">
-            ✅ {{ success_msg }}
+            ✅ {{ pesan }}
           </div>
           {% endif %}
 
-          <form method="POST" action="/transaksi" class="space-y-6">
+          <form method="POST" action="{{ url_for('edit_transaksi', id_tx=data_edit.id) if data_edit else url_for('transaksi') }}" class="space-y-6">
             
-            <!-- Pilihan Jenis Transaksi (Radio Buttons Bergaya Card) -->
             <div>
               <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-3">Jenis Transaksi</label>
               <div class="grid grid-cols-2 gap-4">
                 <label class="cursor-pointer relative">
-                  <input type="radio" name="jenis" value="pengeluaran" class="peer sr-only" checked>
+                  <input type="radio" name="jenis" value="pengeluaran" class="peer sr-only" {% if data_edit %}{% if data_edit.type == 'pengeluaran' %}checked{% endif %}{% else %}checked{% endif %}>
                   <div class="w-full text-center px-4 py-3 rounded-xl border border-transparent font-bold text-sm text-muted bg-[#0d1b2a] hover:bg-white/5 transition-all peer-checked:bg-[rgba(244,63,94,0.1)] peer-checked:border-[rgba(244,63,94,0.3)] peer-checked:text-rose-400">
                     📉 Pengeluaran
                   </div>
                 </label>
                 <label class="cursor-pointer relative">
-                  <input type="radio" name="jenis" value="pemasukan" class="peer sr-only">
+                  <input type="radio" name="jenis" value="pemasukan" class="peer sr-only" {% if data_edit and data_edit.type == 'pemasukan' %}checked{% endif %}>
                   <div class="w-full text-center px-4 py-3 rounded-xl border border-transparent font-bold text-sm text-muted bg-[#0d1b2a] hover:bg-white/5 transition-all peer-checked:bg-[rgba(52,211,153,0.1)] peer-checked:border-[rgba(52,211,153,0.3)] peer-checked:text-emerald-400">
                     📈 Pemasukan
                   </div>
@@ -150,30 +142,27 @@
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <!-- Tanggal -->
               <div>
                 <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Tanggal</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">📅</span>
-                  <input type="date" name="tanggal" required class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm" value="2026-05-29"/>
+                  <input type="date" name="tanggal" required class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm" value="{% if data_edit %}{{ data_edit.date }}{% else %}2026-06-02{% endif %}"/>
                 </div>
               </div>
 
-              <!-- Kategori -->
               <div>
                 <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Kategori</label>
                 <div class="relative">
                   <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">📁</span>
                   <select name="kategori" required class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm appearance-none bg-[#0d1b2a]">
-                    <option value="" disabled selected>Pilih Kategori...</option>
-                    <option value="makanan">Makanan & Minuman</option>
-                    <option value="transportasi">Transportasi</option>
-                    <option value="tagihan">Tagihan & Utilitas</option>
-                    <option value="hiburan">Hiburan</option>
-                    <option value="gaji">Gaji / Pendapatan</option>
-                    <option value="lainnya">Lainnya</option>
+                    <option value="" disabled {% if not data_edit %}selected{% endif %}>Pilih Kategori...</option>
+                    <option value="makanan" {% if data_edit and data_edit.category == 'makanan' %}selected{% endif %}>Makanan & Minuman</option>
+                    <option value="transportasi" {% if data_edit and data_edit.category == 'transportasi' %}selected{% endif %}>Transportasi</option>
+                    <option value="tagihan" {% if data_edit and data_edit.category == 'tagihan' %}selected{% endif %}>Tagihan & Utilitas</option>
+                    <option value="hiburan" {% if data_edit and data_edit.category == 'hiburan' %}selected{% endif %}>Hiburan</option>
+                    <option value="gaji" {% if data_edit and data_edit.category == 'gaji' %}selected{% endif %}>Gaji / Pendapatan</option>
+                    <option value="lainnya" {% if data_edit and data_edit.category == 'lainnya' %}selected{% endif %}>Lainnya</option>
                   </select>
-                  <!-- Custom Arrow Down -->
                   <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-muted">
                     ▼
                   </div>
@@ -181,32 +170,28 @@
               </div>
             </div>
 
-            <!-- Nominal -->
             <div>
               <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Jumlah Nominal (Rp)</label>
               <div class="relative">
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm font-bold">Rp</span>
-                <input type="number" name="nominal" required placeholder="0" min="0" class="form-input w-full rounded-xl py-3 pr-4 pl-12 text-lg font-bold tracking-wider"/>
+                <input type="number" name="nominal" required placeholder="0" min="0" class="form-input w-full rounded-xl py-3 pr-4 pl-12 text-lg font-bold tracking-wider" value="{{ data_edit.amount|int if data_edit else '' }}"/>
               </div>
             </div>
 
-            <!-- Keterangan -->
             <div>
               <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Keterangan / Catatan</label>
-              <textarea name="keterangan" rows="3" placeholder="Contoh: Beli bensin, Makan siang bareng tim..." class="form-input w-full rounded-xl py-3 px-4 text-sm resize-none"></textarea>
+              <textarea name="keterangan" rows="3" placeholder="Contoh: Beli bensin, Makan siang bareng tim..." class="form-input w-full rounded-xl py-3 px-4 text-sm resize-none">{% if data_edit %}{{ data_edit.description }}{% endif %}</textarea>
             </div>
 
-            <!-- Tombol Simpan -->
             <div class="pt-2">
               <button type="submit" class="w-full py-4 rounded-xl font-bold text-sm text-bg transition-all hover:opacity-90 active:scale-95 flex justify-center items-center gap-2" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">
-                💾 Simpan Transaksi
+                {% if data_edit %}💾 Perbarui Transaksi{% else %}💾 Simpan Transaksi{% endif %}
               </button>
             </div>
 
           </form>
         </div>
 
-        <!-- Kolom Kanan: Ringkasan Hari Ini (Lebar 1 Kolom) -->
         <div class="fade-up delay-200 space-y-6">
           
           <div class="glass-card rounded-2xl p-6">
@@ -244,7 +229,6 @@
             </a>
           </div>
 
-          <!-- Mini Widget Bantuan -->
           <div class="rounded-2xl p-5 border" style="background:rgba(56,189,248,0.05); border-color:rgba(56,189,248,0.2);">
             <div class="flex gap-3">
               <span class="text-accent text-xl">💡</span>

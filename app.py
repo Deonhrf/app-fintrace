@@ -288,6 +288,67 @@ def ekspor_laporan():
         headers={"Content-Disposition": "attachment; filename=Laporan_FinTrace_Mei_2026.csv"}
     )
 
+
+
+# Aksi-hapus
+@app.route('/hapus/<int:id_tx>', methods=['POST'])
+def hapus_transaksi(id_tx):
+    # Session
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    id_user = session['user_id']
+
+    mycur = mydb.cursor(pymysql.cursors.DictCursor)
+
+    query = 'Delete from transactions where id = %s and user_id = %s'
+    mycur.execute(query, (id_tx, id_user))
+    mydb.commit()
+    mycur.close()
+
+    flash('Transaksi berhasil dihapus', 'success')
+    return redirect(url_for('riwayat'))
+
+
+# Aksi-edit
+@app.route('/edit-transaksi/<int:id_tx>', methods=['GET', 'POST'])
+def edit_transaksi(id_tx):
+    # Keamanan: Pastikan user wajib login terlebih dahulu
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    id_user = session['user_id']
+    mycur = mydb.cursor(pymysql.cursors.DictCursor)
+
+    # Ambil data transaksi yang akan diedit, pastikan transaksi tersebut milik user yang sedang login
+    if request.method == 'POST':
+        type = request.form.get('jenis')
+        amount = request.form.get('nominal')
+        category = request.form.get('kategori')
+        description = request.form.get('keterangan')
+        date = request.form.get('tanggal')
+
+        query = "update transactions set type=%s, amount=%s, category=%s, description=%s, date=%s where id=%s and user_id=%s"
+        mycur.execute(query, (type, amount, category, description, date, id_tx, id_user))
+        mydb.commit()
+        mycur.close()
+
+        flash('Transaksi berhasil diperbarui', 'success')
+        return redirect(url_for('riwayat'))
+    
+
+    # Mode GET: Ambil data lama untuk dilempar ke form edit
+    mycur.execute("SELECT * FROM transactions WHERE id = %s AND user_id = %s", (id_tx, id_user))
+    data_lama = mycur.fetchone()
+    mycur.close()
+    
+    if not data_lama:
+        flash("Data tidak ditemukan!", "danger")
+        return redirect(url_for('riwayat'))
+        
+    # Pinjam halaman templates/transaksi.html untuk mengedit data
+    return render_template('transaksi.html', data_edit=data_lama)
+    
+
 @app.route('/logout')
 def logout():
     return redirect(url_for('index'))
