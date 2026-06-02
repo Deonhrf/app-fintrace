@@ -192,13 +192,39 @@
           </table>
         </div>
         
-        <div class="p-4 border-t flex items-center justify-between" style="border-color:rgba(56,189,248,0.15);">
-          <span class="text-xs text-muted">Total: {{ riwayat|length }} Transaksi ditemukan</span>
-          <div class="flex gap-2">
-            <button class="px-3 py-1.5 rounded-lg text-xs font-bold text-muted border transition-all hover:text-white hover:border-accent" style="border-color:rgba(56,189,248,0.2);">Sebelumnya</button>
-            <button class="px-3 py-1.5 rounded-lg text-xs font-bold text-muted border transition-all hover:text-white hover:border-accent" style="border-color:rgba(56,189,248,0.2);">Selanjutnya</button>
+          <div class="p-4 border-t flex items-center justify-between" style="border-color:rgba(56,189,248,0.15);">
+            <span class="text-xs text-muted">
+              Menampilkan {{ start_num }}-{{ end_num }} dari {{ total_data }} transaksi
+            </span>
+            
+            <div class="flex gap-2 items-center">
+              <span class="text-xs text-muted mr-2">Halaman {{ current_page }} dari {{ total_pages }}</span>
+
+              {% if current_page > 1 %}
+                <a href="{{ url_for('riwayat', page=current_page-1, search=search, category=selected_category, type=selected_type) }}" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold text-white border border-accent/30 bg-accent/5 transition-all hover:bg-accent/10 active:scale-95 flex items-center" 
+                  style="text-decoration: none;">
+                  ⬅️ Sebelumnya
+                </a>
+              {% else %}
+                <button disabled class="px-3 py-1.5 rounded-lg text-xs font-bold text-muted border border-white/5 bg-white/5 opacity-40 cursor-not-allowed">
+                  ⬅️ Sebelumnya
+                </button>
+              {% endif %}
+
+              {% if current_page < total_pages %}
+                <a href="{{ url_for('riwayat', page=current_page+1, search=search, category=selected_category, type=selected_type) }}" 
+                  class="px-3 py-1.5 rounded-lg text-xs font-bold text-white border border-accent/30 bg-accent/5 transition-all hover:bg-accent/10 active:scale-95 flex items-center" 
+                  style="text-decoration: none;">
+                  Selanjutnya ➡️
+                </a>
+              {% else %}
+                <button disabled class="px-3 py-1.5 rounded-lg text-xs font-bold text-muted border border-white/5 bg-white/5 opacity-40 cursor-not-allowed">
+                  Selanjutnya ➡️
+                </button>
+              {% endif %}
+            </div>
           </div>
-        </div>
       </div>
 
     </div>

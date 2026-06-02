@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>FinTrace – Pengaturan Akun</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
+          colors: { bg:'#0d1b2a', surface:'#112236', card:'#17304a', accent:'#38bdf8', muted:'#5d8aaa', border:'rgba(56,189,248,0.15)' }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { background:#0d1b2a; font-family:'Plus Jakarta Sans',sans-serif; overflow: hidden; }
+    
+    @keyframes fadeUp { from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)} }
+    .fade-up { animation: fadeUp .6s ease both; }
+    .delay-100 { animation-delay: 0.1s; }
+    .delay-200 { animation-delay: 0.2s; }
+    
+    .glass-card { background:#112236; border: 1px solid rgba(56,189,248,0.13); box-shadow:0 12px 40px rgba(0,0,0,0.2); }
+    
+    .form-input { background:#0d1b2a; border:1.5px solid rgba(56,189,248,0.15); color:#d4e8f8; transition:border-color .2s; outline:none; }
+    .form-input:focus { border-color:#38bdf8; }
+    .form-input::placeholder { color:#5d8aaa; }
+    
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(56,189,248,0.2); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(56,189,248,0.5); }
+  </style>
+</head>
+<body class="h-screen text-[#d4e8f8] flex">
+  <div class="blob1" style="position:fixed;top:-10%;left:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(56,189,248,0.08) 0%,transparent 70%);pointer-events:none; z-index: 0;"></div>
+  <div class="blob2" style="position:fixed;bottom:-10%;right:-5%;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(52,211,153,0.05) 0%,transparent 70%);pointer-events:none; z-index: 0;"></div>
+
+  <aside class="relative z-10 w-64 border-r flex flex-col transition-all hidden md:flex" style="border-color:rgba(56,189,248,0.15); background:rgba(17,34,54,0.7); backdrop-filter: blur(10px);">
+    <div class="p-6 border-b" style="border-color:rgba(56,189,248,0.15);">
+      <a href="{{ url_for('dashboard') }}" class="inline-flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl flex items-center justify-center text-sm" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">💰</div>
+        <span class="text-white font-extrabold text-xl tracking-tight">FinTrace</span>
+      </a>
+    </div>
+
+    <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+      <p class="text-[10px] font-bold text-muted uppercase tracking-widest mb-3 ml-2">Menu Utama</p>
+      
+      <a href="{{ url_for('dashboard') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
+        <span>📊</span>
+        <span>Dashboard</span>
+      </a>
+      
+      <a href="{{ url_for('transaksi') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
+        <span>✍️</span>
+        <span>Catat Transaksi</span>
+      </a>
+
+      <a href="{{ url_for('riwayat') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-muted font-medium hover:text-white hover:bg-white/5 transition-all">
+        <span>📜</span>
+        <span>Riwayat Transaksi</span>
+      </a>
+      
+      <a href="{{ url_for('profile') }}" class="flex items-center gap-3 px-4 py-3 rounded-xl text-white font-bold transition-all" style="background:rgba(56,189,248,0.1); border:1px solid rgba(56,189,248,0.2);">
+        <span class="text-accent">⚙️</span>
+        <span>Pengaturan Akun</span>
+      </a>
+    </nav>
+    
+    <div class="p-6 border-t" style="border-color:rgba(56,189,248,0.15);">
+      <a href="{{ url_for('logout') }}" class="group flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-rose-400 bg-rose-500/5 border border-rose-500/10 transition-all duration-300 hover:bg-rose-500/15 hover:border-rose-500/30 hover:shadow-[0_8px_20px_rgba(244,63,94,0.1)] active:scale-95">
+        <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-[#0d1b2a] border border-rose-500/10 group-hover:border-rose-500/30 transition-colors">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform duration-300">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75" />
+          </svg>
+        </div>
+        <span class="tracking-wide">Keluar Akun</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="flex-1 relative z-10 flex flex-col h-screen overflow-hidden">
+    
+    <header class="px-8 py-6 flex items-center justify-between fade-up">
+      <div>
+        <h1 class="text-2xl font-extrabold text-white">Pengaturan Akun</h1>
+        <p class="text-muted text-sm mt-1">Kelola informasi profil, keamanan, dan preferensi akunmu.</p>
+      </div>
+    </header>
+
+    <div class="flex-1 overflow-y-auto px-8 pb-10 space-y-6">
+      
+      {% if success_msg %}
+      <div class="fade-up px-4 py-3 rounded-xl text-sm flex items-center gap-2" style="background:rgba(52,211,153,0.1);border:1px solid rgba(52,211,153,0.3);color:#34d399">
+        ✅ {{ success_msg }}
+      </div>
+      {% endif %}
+      
+      {% if error_msg %}
+      <div class="fade-up px-4 py-3 rounded-xl text-sm flex items-center gap-2" style="background:rgba(244,63,94,0.1);border:1px solid rgba(244,63,94,0.3);color:#fb7185">
+        ⚠️ {{ error_msg }}
+      </div>
+      {% endif %}
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 fade-up delay-100">
+        
+        <div class="lg:col-span-2 space-y-6">
+          
+          <div class="glass-card rounded-2xl p-6">
+            <h2 class="text-lg font-bold text-white mb-6 border-b pb-4" style="border-color:rgba(56,189,248,0.15);">Informasi Profil</h2>
+            
+            <form method="POST" action="/update_profile" class="space-y-5">
+              <div class="flex items-center gap-4 mb-6">
+                <div class="w-16 h-16 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-2xl text-accent font-bold">
+                  {{ session.name[0] | default('D') | upper }}
+                </div>
+                <div>
+                  <button type="button" class="text-sm font-bold text-accent hover:underline">Ubah Foto</button>
+                  <p class="text-[10px] text-muted mt-1">Format: JPG, PNG. Maks 2MB.</p>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Nama Lengkap</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">👤</span>
+                    <input type="text" name="name" value="{{ session.name }}" required class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Alamat Email</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">✉️</span>
+                    <input type="email" name="email" value="{{ session.email }}" required class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 text-right">
+                <button type="submit" class="px-6 py-3 rounded-xl font-bold text-sm text-bg transition-all hover:opacity-90 active:scale-95 inline-flex items-center gap-2" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">
+                  Simpan Perubahan
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="glass-card rounded-2xl p-6">
+            <h2 class="text-lg font-bold text-white mb-6 border-b pb-4" style="border-color:rgba(56,189,248,0.15);">Ganti Kata Sandi</h2>
+            
+            <form method="POST" action="/update_password" class="space-y-5">
+              <div>
+                <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Kata Sandi Saat Ini</label>
+                <div class="relative">
+                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">🔒</span>
+                  <input type="password" name="old_password" placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Kata Sandi Baru</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">🔑</span>
+                    <input type="password" name="new_password" placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Konfirmasi Kata Sandi Baru</label>
+                  <div class="relative">
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">✅</span>
+                    <input type="password" name="confirm_password" placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
+                  </div>
+                </div>
+              </div>
+
+              <div class="pt-4 text-right">
+                <button type="submit" class="px-6 py-3 rounded-xl font-bold text-sm text-white border transition-all hover:bg-white/5 active:scale-95 inline-flex items-center gap-2" style="border-color:rgba(56,189,248,0.3)">
+                  Perbarui Kata Sandi
+                </button>
+              </div>
+            </form>
+          </div>
+
+        </div>
+
+        <div class="fade-up delay-200 space-y-6">
+          
+          <div class="glass-card rounded-2xl p-6">
+            <h2 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
+              <span>⚙️</span> Preferensi Aplikasi
+            </h2>
+            
+            <div class="space-y-4">
+              <div>
+                <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Mata Uang Utama</label>
+                <div class="relative">
+                  <select class="form-input w-full rounded-xl py-2.5 px-4 text-sm appearance-none cursor-pointer bg-[#0d1b2a]">
+                    <option value="IDR" selected>Rupiah (IDR)</option>
+                    <option value="USD">US Dollar (USD)</option>
+                  </select>
+                  <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-muted">▼</div>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Notifikasi Email</label>
+                <label class="flex items-center cursor-pointer">
+                  <div class="relative">
+                    <input type="checkbox" class="sr-only" checked>
+                    <div class="block w-10 h-6 rounded-full bg-surface border border-accent/20"></div>
+                    <div class="dot absolute left-1 top-1 bg-accent w-4 h-4 rounded-full transition translate-x-4"></div>
+                  </div>
+                  <div class="ml-3 text-sm text-muted font-medium">Laporan Bulanan</div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="rounded-2xl p-6 border" style="background:rgba(244,63,94,0.05); border-color:rgba(244,63,94,0.2);">
+            <h2 class="text-sm font-bold text-rose-400 mb-2 flex items-center gap-2">
+              <span>⚠️</span> Zona Bahaya
+            </h2>
+            <p class="text-xs text-muted mb-4 leading-relaxed">
+              Menghapus akun akan menghilangkan semua data riwayat transaksi dan pengaturanmu secara permanen. Tindakan ini tidak dapat dibatalkan.
+            </p>
+            <button class="w-full py-3 rounded-xl font-bold text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors">
+              Hapus Akun Permanen
+            </button>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </main>
+</body>
+</html>
