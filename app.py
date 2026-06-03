@@ -98,16 +98,20 @@ def dashboard():
                             )
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    query = "select id, username, password, email from users where username=%s and password=%s"
+    query = "select id, username, password, email from users where username=%s"
     if request.method == 'POST':
         user = request.form['username']
         password = request.form['password']
-        value = (user, password)
         mycur = mydb.cursor()
-        mycur.execute(query, value)
+        mycur.execute(query,[user])
         result = mycur.fetchone()
         mycur.close()
-        if result and password == result[2]:
+
+        if not result:
+            pesan = "Akun anda tidak ditemukan atau belum terdaftar"
+            return render_template('login.html', error=pesan)
+        
+        if password == result[2]:
             session['user_id'] = result[0]
             session['name'] = result[1]
             session['email'] = result[3] 
