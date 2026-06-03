@@ -415,7 +415,7 @@ def update_password():
     if 'user_id' not in session:
         return redirect(url_for(login))
     
-    id_user = session('user_id')
+    id_user = session['user_id']
     sandi_lama = request.form.get('old_password')
     sandi_baru = request.form.get('new_password')
     confirm_sandi_baru = request.form.get('confirm_password')
@@ -446,11 +446,11 @@ def update_password():
         mycur.close()
         flash("Kata sandi saat ini yang Anda masukkan salah!", "danger")
         
-    return redirect(url_for('pengaturan'))
+    return redirect(url_for('login'))
 
 # hapus_akun
-app.route('/hapus_akun', methods=['POST'])
-def hapus_akun():
+@app.route('/delate_akun', methods=['POST'])
+def delate_akun():
     if 'user_id' not in session:
         return redirect(url_for('login'))
     

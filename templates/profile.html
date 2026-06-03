@@ -233,7 +233,7 @@
                 Menghapus akun akan menghilangkan semua data riwayat transaksi dan pengaturanmu secara permanen. Tindakan ini tidak dapat dibatalkan.
               </p>
               
-              <form method="POST" action="{{ url_for('hapus_akun') }}" onsubmit="return confirm('PERINGATAN TERAKHIR!\nApakah Anda yakin ingin menghapus akun FinTrace Anda secara permanen? Semua data transaksi Anda akan hilang selamanya.');">
+              <form method="POST" action="{{ url_for('delate_akun') }}" onsubmit="return confirm('PERINGATAN TERAKHIR!\nApakah Anda yakin ingin menghapus akun FinTrace Anda secara permanen? Semua data transaksi Anda akan hilang selamanya.');">
                 <button type="submit" class="w-full py-3 rounded-xl font-bold text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors active:scale-95">
                   Hapus Akun Permanen
                 </button>
