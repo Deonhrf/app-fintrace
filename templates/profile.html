@@ -127,7 +127,7 @@
 
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Nama Lengkap</label>
+                  <label class="block text-[11px] font-bold text-muted tracking-widest mb-2">Username</label>
                   <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">👤</span>
                     <input type="text" name="name" value="{{ session.name }}" required class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
@@ -135,7 +135,7 @@
                 </div>
 
                 <div>
-                  <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Alamat Email</label>
+                  <label class="block text-[11px] font-bold text-muted tracking-widest mb-2">Alamat Email</label>
                   <div class="relative">
                     <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">✉️</span>
                     <input type="email" name="email" value="{{ session.email }}" required class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
@@ -151,48 +151,58 @@
             </form>
           </div>
 
-          <div class="glass-card rounded-2xl p-6">
-            <h2 class="text-lg font-bold text-white mb-6 border-b pb-4" style="border-color:rgba(56,189,248,0.15);">Ganti Kata Sandi</h2>
-            
-            <form method="POST" action="/update_password" class="space-y-5">
-              <div>
-                <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Kata Sandi Saat Ini</label>
-                <div class="relative">
-                  <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">🔒</span>
-                  <input type="password" name="old_password" placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
-                </div>
-              </div>
+          <!-- setting kata sandi -->
 
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glass-card rounded-2xl p-6">
+              <h2 class="text-lg font-bold text-white mb-6 border-b pb-4" style="border-color:rgba(56,189,248,0.15);">Ganti Kata Sandi</h2>
+              
+              <form method="POST" action="/update_password" class="space-y-5">
+                
                 <div>
-                  <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Kata Sandi Baru</label>
+                  <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Kata Sandi Saat Ini</label>
                   <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">🔑</span>
-                    <input type="password" name="new_password" placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
+                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">🔒</span>
+                    <input type="password" name="old_password" placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-12 pl-10 text-sm bg-transparent text-white"/>
+                    <button type="button" class="toggle-password absolute right-4 top-1/2 -translate-y-1/2 text-sm opacity-50 hover:opacity-100 transition-opacity">👁️</button>
                   </div>
                 </div>
 
-                <div>
-                  <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Konfirmasi Kata Sandi Baru</label>
-                  <div class="relative">
-                    <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">✅</span>
-                    <input type="password" name="confirm_password" placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-4 pl-10 text-sm"/>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  
+                  <div>
+                    <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Kata Sandi Baru</label>
+                    <div class="relative">
+                      <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">🔑</span>
+                      <input type="password" name="new_password" placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-12 pl-10 text-sm bg-transparent text-white"/>
+                      <button type="button" class="toggle-password absolute right-4 top-1/2 -translate-y-1/2 text-sm opacity-50 hover:opacity-100 transition-opacity">👁️</button>
+                    </div>
                   </div>
+
+                  <div>
+                    <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Konfirmasi Kata Sandi Baru</label>
+                    <div class="relative">
+                      <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">✅</span>
+                      <input type="password" name="confirm_password" placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-12 pl-10 text-sm bg-transparent text-white"/>
+                      <button type="button" class="toggle-password absolute right-4 top-1/2 -translate-y-1/2 text-sm opacity-50 hover:opacity-100 transition-opacity">👁️</button>
+                    </div>
+                  </div>
+                  
                 </div>
-              </div>
 
-              <div class="pt-4 text-right">
-                <button type="submit" class="px-6 py-3 rounded-xl font-bold text-sm text-white border transition-all hover:bg-white/5 active:scale-95 inline-flex items-center gap-2" style="border-color:rgba(56,189,248,0.3)">
-                  Perbarui Kata Sandi
-                </button>
-              </div>
-            </form>
-          </div>
-
+                <div class="pt-4 text-right">
+                  <button type="submit" class="px-6 py-3 rounded-xl font-bold text-sm text-white border transition-all hover:bg-white/5 active:scale-95 inline-flex items-center gap-2" style="border-color:rgba(56,189,248,0.3)">
+                    Perbarui Kata Sandi
+                  </button>
+                </div>
+              </form>
+            </div>
+          <!-- End setting kata sandi -->
         </div>
 
         <div class="fade-up delay-200 space-y-6">
           
+          <!-- Prefensi aplikasi -->
+
           <div class="glass-card rounded-2xl p-6">
             <h2 class="text-sm font-bold text-white mb-4 flex items-center gap-2">
               <span>⚙️</span> Preferensi Aplikasi
@@ -204,42 +214,58 @@
                 <div class="relative">
                   <select class="form-input w-full rounded-xl py-2.5 px-4 text-sm appearance-none cursor-pointer bg-[#0d1b2a]">
                     <option value="IDR" selected>Rupiah (IDR)</option>
-                    <option value="USD">US Dollar (USD)</option>
                   </select>
                   <div class="pointer-events-none absolute inset-y-0 right-4 flex items-center text-muted">▼</div>
                 </div>
               </div>
 
-              <div>
-                <label class="block text-[11px] font-bold text-muted uppercase tracking-widest mb-2">Notifikasi Email</label>
-                <label class="flex items-center cursor-pointer">
-                  <div class="relative">
-                    <input type="checkbox" class="sr-only" checked>
-                    <div class="block w-10 h-6 rounded-full bg-surface border border-accent/20"></div>
-                    <div class="dot absolute left-1 top-1 bg-accent w-4 h-4 rounded-full transition translate-x-4"></div>
-                  </div>
-                  <div class="ml-3 text-sm text-muted font-medium">Laporan Bulanan</div>
-                </label>
-              </div>
             </div>
           </div>
 
+          <!-- End Prefensi aplikasi -->
+           
+        <!-- Hapus akun   -->
           <div class="rounded-2xl p-6 border" style="background:rgba(244,63,94,0.05); border-color:rgba(244,63,94,0.2);">
-            <h2 class="text-sm font-bold text-rose-400 mb-2 flex items-center gap-2">
-              <span>⚠️</span> Zona Bahaya
-            </h2>
-            <p class="text-xs text-muted mb-4 leading-relaxed">
-              Menghapus akun akan menghilangkan semua data riwayat transaksi dan pengaturanmu secara permanen. Tindakan ini tidak dapat dibatalkan.
-            </p>
-            <button class="w-full py-3 rounded-xl font-bold text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors">
-              Hapus Akun Permanen
-            </button>
-          </div>
+              <h2 class="text-sm font-bold text-rose-400 mb-2 flex items-center gap-2">
+                <span>⚠️</span> Zona Bahaya
+              </h2>
+              <p class="text-xs text-muted mb-4 leading-relaxed">
+                Menghapus akun akan menghilangkan semua data riwayat transaksi dan pengaturanmu secara permanen. Tindakan ini tidak dapat dibatalkan.
+              </p>
+              
+              <form method="POST" action="{{ url_for('hapus_akun') }}" onsubmit="return confirm('PERINGATAN TERAKHIR!\nApakah Anda yakin ingin menghapus akun FinTrace Anda secara permanen? Semua data transaksi Anda akan hilang selamanya.');">
+                <button type="submit" class="w-full py-3 rounded-xl font-bold text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 hover:bg-rose-500/20 transition-colors active:scale-95">
+                  Hapus Akun Permanen
+                </button>
+              </form>
+            </div>
+          <!-- End hapus akun -->
 
         </div>
 
       </div>
     </div>
   </main>
+  <script>
+  // 1. Cari semua tombol mata di dalam halaman
+  const toggleButtons = document.querySelectorAll('.toggle-password');
+
+  // 2. Berikan "tugas mendengarkan klik" ke setiap tombol mata
+  toggleButtons.forEach(button => {
+    button.addEventListener('click', function () {
+      // Cari kotak input yang berada tepat di sebelah tombol mata ini
+      const input = this.previousElementSibling;
+      
+      // Sakelar logika: Jika tipenya password, ubah ke text. Jika text, kembalikan ke password.
+      if (input.type === 'password') {
+        input.type = 'text';
+        this.textContent = '🙈'; // Berubah jadi monyet tutup mata saat sandi terlihat
+      } else {
+        input.type = 'password';
+        this.textContent = '👁️'; // Kembali jadi mata terbuka saat sandi disembunyikan
+      }
+    });
+  });
+</script>
 </body>
 </html>

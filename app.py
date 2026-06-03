@@ -448,7 +448,28 @@ def update_password():
         
     return redirect(url_for('pengaturan'))
 
-
+# hapus_akun
+app.route('/hapus_akun', methods=['POST'])
+def hapus_akun():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    id_user = session['user_id']
+    # 2. Eksekusi Penghapusan di Database Pusat (MySQL)
+    mycur = mydb.cursor()
+    # Menghapus user murni dari tabel users. 
+    # Karena foreign key diatur 'ON DELETE CASCADE', tabel transactions akan dibersihkan otomatis oleh MySQL.
+    query = "DELETE FROM users WHERE id = %s"
+    mycur.execute(query, (id_user,))
+    mydb.commit()
+    mycur.close()
+    
+    # 3. Hancurkan Kunci Kartu Akses (Session RAM) sampai bersih plong
+    session.clear()
+    
+    # 4. Beri pesan perpisahan di halaman login
+    flash("Akun Anda telah dihapus permanen dari sistem FinTrace. Terima kasih!", "success")
+    return redirect(url_for('login'))
 
 @app.route('/logout')
 def logout():
