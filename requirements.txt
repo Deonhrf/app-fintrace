@@ -1,3 +1,4 @@
-Flask
-pymysql
-json
+Flask==3.0.2
+PyMySQL==1.1.0
+cryptography==42.0.5
+Werkzeug==3.0.1
