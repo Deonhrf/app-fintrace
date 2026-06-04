@@ -2,6 +2,8 @@ from flask import Flask, render_template, request,redirect, url_for, session, Re
 import pymysql
 import json
 import math
+import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 app.secret_key = 'fintrace_rahasia_super_aman_123'
@@ -12,6 +14,10 @@ mydb = pymysql.connect(
     password='',
     database='db_pencatatan_keuangan'
 )
+
+# Upload foto
+UPLOAD_FOLDER = 'static/uploads/profile'
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
 @app.route('/')
@@ -98,7 +104,7 @@ def dashboard():
                             )
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    query = "select id, username, password, email from users where username=%s"
+    query = "select id, username, password, email, foto from users where username=%s"
     if request.method == 'POST':
         user = request.form['username']
         password = request.form['password']
@@ -115,6 +121,7 @@ def login():
             session['user_id'] = result[0]
             session['name'] = result[1]
             session['email'] = result[3] 
+            session['foto'] = result[4]
             return redirect('/dashboard')
         else: 
             return render_template('login.html', error="Nama atau Password Salah")
@@ -474,6 +481,65 @@ def delate_akun():
     # 4. Beri pesan perpisahan di halaman login
     flash("Akun Anda telah dihapus permanen dari sistem FinTrace. Terima kasih!", "success")
     return redirect(url_for('login'))
+
+
+
+
+# fungsi cek eksentesi file
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+@app.route('/upload_foto', methods=['POST'])
+def upload_foto():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+        
+    id_user = session['user_id']
+    
+    # 1. Cek apakah ada kiriman file dari HTML
+    if 'foto_profil' not in request.files:
+        flash('Tidak ada bagian file', 'danger')
+        return redirect(url_for('profile'))
+        
+    file = request.files['foto_profil']
+    
+    # 2. Cek jika user tidak memilih file apa pun tapi asal pencet
+    if file.filename == '':
+        flash('Belum ada file yang dipilih', 'danger')
+        return redirect(url_for('profile'))
+        
+    # 3. Validasi Filter: Harus ada filenya dan ekstensinya lolos verifikasi
+    if file and allowed_file(file.filename):
+        # Ambil ekstensi aslinya (misal: .jpg atau .png)
+        ekstensi = file.filename.rsplit('.', 1)[1].lower()
+        
+        # Buat nama file baru yang super unik berdasarkan ID user agar tidak bentrok
+        nama_file_baru = f"profile_{id_user}.{ekstensi}"
+        
+        # Tentukan jalur lengkap lokasi penyimpanan fisik di harddisk
+        jalur_penyimpanan = os.path.join(UPLOAD_FOLDER, nama_file_baru)
+        
+        # Eksekusi penyimpanan file fisik ke folder static/uploads/profile/
+        file.save(jalur_penyimpanan)
+        
+        # 4. Catat nama file baru tersebut ke dalam database MySQL
+        mycur = mydb.cursor()
+        query = "UPDATE users SET foto = %s WHERE id = %s"
+        mycur.execute(query, (nama_file_baru, id_user))
+        mydb.commit()
+        mycur.close()
+        
+        # 5. Update kartu akses session RAM agar halaman langsung memuat foto baru
+        session['foto'] = nama_file_baru
+        
+        flash('Foto profil berhasil diperbarui!', 'success')
+    else:
+        flash('Format file tidak diizinkan! Gunakan JPG, JPEG, atau PNG.', 'danger')
+        
+    return redirect(url_for('profile'))
+
+
 
 @app.route('/logout')
 def logout():

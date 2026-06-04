@@ -114,17 +114,31 @@
           <div class="glass-card rounded-2xl p-6">
             <h2 class="text-lg font-bold text-white mb-6 border-b pb-4" style="border-color:rgba(56,189,248,0.15);">Informasi Profil</h2>
             
-            <form method="POST" action="/update_profile" class="space-y-5">
-              <div class="flex items-center gap-4 mb-6">
-                <div class="w-16 h-16 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-2xl text-accent font-bold">
-                  {{ session.name[0] | default('D') | upper }}
+            <form method="POST" action="{{ url_for('upload_foto') }}" enctype="multipart/form-data" id="form-foto" class="mb-6">
+              <div class="flex items-center gap-4">
+                
+                <div class="w-16 h-16 rounded-full bg-accent/20 border border-accent/30 flex items-center justify-center text-2xl text-accent font-bold overflow-hidden">
+                  {% if session.foto and session.foto != 'default.png' and session.foto != 'default.jpg' %}
+                    <img src="{{ url_for('static', filename='uploads/profile/' + session.foto) }}" class="w-full h-full object-cover">
+                  {% else %}
+                    {{ session.name[0] | default('D') | upper }}
+                  {% endif %}
                 </div>
+                
                 <div>
-                  <button type="button" class="text-sm font-bold text-accent hover:underline">Ubah Foto</button>
+                  <input type="file" name="foto_profil" id="input-file-foto" accept=".jpg, .jpeg, .png" class="hidden" onchange="document.getElementById('form-foto').submit();">
+                  
+                  <button type="button" onclick="document.getElementById('input-file-foto').click();" class="text-sm font-bold text-accent hover:underline">
+                    Ubah Foto
+                  </button>
                   <p class="text-[10px] text-muted mt-1">Format: JPG, PNG. Maks 2MB.</p>
                 </div>
+                
               </div>
+            </form>
 
+            <hr class="border-white/5 my-4"> <form method="POST" action="{{ url_for('update_profile') }}" class="space-y-5">
+              
               <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label class="block text-[11px] font-bold text-muted tracking-widest mb-2">Username</label>
@@ -148,6 +162,7 @@
                   Simpan Perubahan
                 </button>
               </div>
+              
             </form>
           </div>
 
