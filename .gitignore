@@ -37,3 +37,7 @@ instance/
 # === OS Garbage ===
 .DS_Store
 Thumbs.db
+
+
+# === Media & User Uploads (FinTrace) ===
+static/uploads/profile/profile_*
