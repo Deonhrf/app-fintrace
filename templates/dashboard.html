@@ -7,16 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'] },
-          colors: { bg:'#0d1b2a', surface:'#112236', card:'#17304a', accent:'#38bdf8', muted:'#5d8aaa', border:'rgba(56,189,248,0.15)' }
-        }
-      }
-    }
-  </script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
   <style>
     body { background:#0d1b2a; font-family:'Plus Jakarta Sans',sans-serif; overflow: hidden; }
     
@@ -169,7 +160,6 @@
       </div>
     </div>
   </main>
-
   <script>
     const ctx = document.getElementById('expenseChart').getContext('2d');
     

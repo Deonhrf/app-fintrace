@@ -79,13 +79,19 @@
             <label class="block text-[11px] font-bold text-muted uppercase tracking-widest">Password</label>
             <a href="#" class="text-[11px] font-bold text-accent hover:underline">Lupa sandi?</a>
           </div>
+        <div>
           <div class="relative">
             <span class="absolute left-4 top-1/2 -translate-y-1/2 text-muted text-sm">🔒</span>
             <input type="password" id="passwordInput" name="password" required placeholder="••••••••" class="form-input w-full rounded-xl py-3 pr-12 pl-10 text-sm"/>
-            <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-accent transition-colors focus:outline-none text-sm select-none">
-              <span id="eyeIcon">👁️</span>
+            
+            <button type="button" onclick="togglePassword()" class="absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-accent transition-colors focus:outline-none select-none">
+              <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0" />
+              </svg>
             </button>
           </div>  
+        </div>
         </div>
 
         <button type="submit" class="w-full mt-2 py-3.5 rounded-xl font-bold text-sm text-bg transition-all hover:opacity-90 active:scale-95 flex justify-center items-center gap-2" style="background:linear-gradient(135deg,#38bdf8,#0ea5e9)">
@@ -141,21 +147,6 @@
       </div>
     </div>
   </footer>
-
-  <script>
-    function togglePassword() {
-      const passwordInput = document.getElementById('passwordInput');
-      const eyeIcon = document.getElementById('eyeIcon');
-      
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        eyeIcon.textContent = '🙈';
-      } else {
-        passwordInput.type = 'password';
-        eyeIcon.textContent = '👁️';
-      }
-    }
-  </script>
-
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
 </html>
