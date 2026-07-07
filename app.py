@@ -106,8 +106,8 @@ def dashboard():
 def login():
     query = "select id, username, password, email, foto from users where username=%s"
     if request.method == 'POST':
-        user = request.form['username']
-        password = request.form['password']
+        user = request.form.get('username')
+        password = request.form.get('password')
         mycur = mydb.cursor()
         mycur.execute(query,[user])
         result = mycur.fetchone()
@@ -421,8 +421,92 @@ def update_profile() :
     flash('Profil berhasil diperbarui', 'success')
     return redirect(url_for('profile'))
 
+
 @app.route('/update_password', methods=['POST'])
 def update_password():
+    if 'user_id' not in session:
+        return redirect(url_for(login))
+    
+    id_user = session['user_id']
+    sandi_lama = request.form.get('old_password')
+    sandi_baru = request.form.get('new_password')
+    confirm_sandi_baru = request.form.get('confirm_password')
+
+    # Logika - Pencocokan apakaha sandi baru sesuai dengan konfirmasi yang diinputkan
+    if sandi_baru != confirm_sandi_baru:
+        flash('Konfirmasi sandi baru tidak cocok!', 'danger')
+        return redirect(url_for('profile'))
+    
+    # Logika - Cek apakah sandi lama benar
+    mycur = mydb.cursor()
+    mycur.execute("SELECT password FROM users WHERE id = %s", (id_user,))
+    user_data = mycur.fetchone()
+
+    # Logika Cek 2: Apakah sandi lama sesuai dengan data di database?
+    mycur = mydb.cursor()
+    mycur.execute("SELECT password FROM users WHERE id = %s", (id_user,))
+    user_data = mycur.fetchone()
+    
+    # Di sini kita asumsikan teks biasa, nanti di industri nyata wajib di-hash
+    if user_data and sandi_lama == user_data[0]:
+        # Jika benar, eksekusi pembaruan
+        mycur.execute("UPDATE users SET password = %s WHERE id = %s", (sandi_baru, id_user))
+        mydb.commit()
+        mycur.close()
+        flash("Kata sandi berhasil diperbarui!", "success")
+    else:
+        mycur.close()
+        flash("Kata sandi saat ini yang Anda masukkan salah!", "danger")
+        
+    return redirect(url_for('login'))
+    if 'user_id' not in session:
+        flash('Silakan login terlebih dahulu', 'danger')
+        return redirect(url_for('login'))
+    
+    user_id = session['user_id']
+    old_password = request.form.get('old_password')
+    new_password = request.form.get('new_password')
+    confirm_password = request.form.get('confirm_password')
+
+    if not old_password or not new_password or not confirm_password:
+        flash('Semua field password harus diisi!', 'danger')
+        return redirect(url_for('profile'))
+
+    if new_password != confirm_password:
+        flash('Konfirmasi password baru tidak cocok!', 'danger')
+        return redirect(url_for('profile'))
+
+    if len(new_password) < 6:
+        flash('Password baru minimal 6 karakter!', 'danger')
+        return redirect(url_for('profile'))
+
+    try:
+        mycur = mydb.cursor(dictionary=True)
+        
+        # Cek password lama
+        mycur.execute("SELECT password FROM users WHERE id = %s", (user_id,))
+        user = mycur.fetchone()
+
+        if not user or old_password != user['password']:
+            flash('Password lama yang Anda masukkan salah!', 'danger')
+            return redirect(url_for('profile'))
+
+        # Update password
+        mycur.execute("UPDATE users SET password = %s WHERE id = %s", 
+                     (new_password, user_id))
+        mydb.commit()
+
+        flash('Kata sandi berhasil diperbarui!', 'success')
+        return redirect(url_for('profile'))
+
+    except Exception as e:
+        print("Error:", e)
+        flash('Terjadi kesalahan saat mengupdate password', 'danger')
+        return redirect(url_for('profile'))
+
+    finally:
+        if 'mycur' in locals():
+            mycur.close()
     if 'user_id' not in session:
         return redirect(url_for(login))
     
