@@ -4,7 +4,7 @@ FinTrace adalah aplikasi berbasis web pintar untuk mencatat, melacak, dan mengan
 
 ## 🎥 Demo Aplikasi
 
-[Tonton Demo FinTrace](https://youtu.be/CvtPvmUhn_s)
+[![Demo FinTrace](https://img.youtube.com/vi/CvtPvmUhn_s/0.jpg)](https://youtu.be/CvtPvmUhn_s)
 
 ---
 
