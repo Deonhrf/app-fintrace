@@ -2,6 +2,10 @@
 
 FinTrace adalah aplikasi berbasis web pintar untuk mencatat, melacak, dan menganalisis transaksi keuangan harian secara privat dan real-time. Aplikasi ini dibangun menggunakan arsitektur **Flask** di sisi *backend* dan visualisasi grafik dinamis menggunakan **Chart.js** di sisi *frontend*.
 
+## 🎥 Demo Aplikasi
+
+[Tonton Demo FinTrace](https://youtu.be/CvtPvmUhn_s)
+
 ---
 
 ## 🚀 Fitur Utama
